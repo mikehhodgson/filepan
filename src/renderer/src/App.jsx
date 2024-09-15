@@ -1,8 +1,33 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import Versions from './components/Versions';
+import electronLogo from './assets/electron.svg';
+import { useEffect } from 'react';
 
 function App() {
-  const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+  const ipcHandle = () => window.electron.ipcRenderer.send('ping');
+
+  useEffect(() => {
+    const dragover = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const drop = async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const files = Array.from(event.dataTransfer.files);
+      const ret = await window.api.droppedFiles(files);
+      console.log(ret);
+    };
+
+    document.addEventListener('dragover', dragover);
+    document.addEventListener('drop', drop);
+
+    return () => {
+      document.removeEventListener('dragover', dragover);
+      document.removeEventListener('drop', drop);
+    };
+  });
 
   return (
     <>
@@ -28,8 +53,7 @@ function App() {
       </div>
       <Versions></Versions>
     </>
-  )
+  );
 }
 
-export default App
-
+export default App;
