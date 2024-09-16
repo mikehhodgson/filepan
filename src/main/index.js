@@ -1,7 +1,10 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+
 import icon from '../../resources/icon.png?asset';
+
+import { handleDroppedFiles } from './util';
 
 function createWindow() {
   // Create the browser window.
@@ -53,10 +56,7 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'));
 
-  ipcMain.handle('dropped-files', (event, arg) => {
-    console.log('Dropped File(s):', arg);
-    return `Received ${arg.length} paths.`;
-  });
+  ipcMain.handle('dropped-files', handleDroppedFiles);
 
   createWindow();
 
