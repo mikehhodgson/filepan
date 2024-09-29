@@ -1,11 +1,15 @@
 import { lstatSync, readdirSync } from 'fs';
 //import { extname } from 'path';
 
-export const handleDroppedFiles = (event, arg) => {
+export const handleDroppedFiles = (browserWindow) => (event, arg) => {
   console.log('Dropped File(s):', arg);
 
   if (arg.length != 1) {
-    return 'Need single directory path';
+    browserWindow.webContents.send(
+      'update-files',
+      'Need single directory path'
+    );
+    return;
   }
 
   const path = arg[0];
@@ -13,13 +17,21 @@ export const handleDroppedFiles = (event, arg) => {
   try {
     const stats = lstatSync(path);
     if (stats.isDirectory()) {
-      return listFilesInDirectory(path);
+      browserWindow.webContents.send(
+        'update-files',
+        listFilesInDirectory(path)
+      );
+      return;
     } else {
-      return 'Did not receive directory';
+      browserWindow.webContents.send(
+        'update-files',
+        'Did not receive directory'
+      );
+      return;
     }
   } catch (error) {}
 
-  return `Received no path.`;
+  browserWindow.webContents.send('update-files', `Received no path.`);
 };
 
 //const supportedFileTypes = ['jpg', 'png', 'jpeg'];

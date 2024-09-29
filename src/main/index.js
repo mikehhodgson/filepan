@@ -37,6 +37,8 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
+
+  ipcMain.on('dropped-files', handleDroppedFiles(mainWindow));
 }
 
 // This method will be called when Electron has finished
@@ -55,8 +57,6 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'));
-
-  ipcMain.handle('dropped-files', handleDroppedFiles);
 
   createWindow();
 

@@ -1,9 +1,17 @@
 import Versions from './components/Versions';
 import electronLogo from './assets/electron.svg';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [state, setState] = useState({ path: '', content: [] });
+
   const ipcHandle = () => window.electron.ipcRenderer.send('ping');
+
+  useEffect(() => {
+    const handleUpdateFiles = (event, value) => console.log({ event, value });
+    window.api.onUpdateFiles(handleUpdateFiles);
+    return () => window.api.offUpdateFiles(handleUpdateFiles);
+  });
 
   useEffect(() => {
     const dragover = (e) => {
@@ -15,9 +23,10 @@ function App() {
       event.preventDefault();
       event.stopPropagation();
 
-      const files = Array.from(event.dataTransfer.files);
-      const ret = await window.api.droppedFiles(files);
-      console.log(ret);
+      const droppedFiles = Array.from(event.dataTransfer.files);
+      window.api.droppedFiles(droppedFiles);
+      //const path = await window.api.droppedFiles(droppedFiles);
+      //console.log(path);
     };
 
     document.addEventListener('dragover', dragover);

@@ -4,7 +4,9 @@ import { electronAPI } from '@electron-toolkit/preload';
 // Custom APIs for renderer
 const api = {
   droppedFiles: (paths) =>
-    ipcRenderer.invoke('dropped-files', paths.map(webUtils.getPathForFile)),
+    ipcRenderer.send('dropped-files', paths.map(webUtils.getPathForFile)),
+  onUpdateFiles: (callback) => ipcRenderer.on('update-files', callback),
+  offUpdateFiles: (callback) => ipcRenderer.off('update-files', callback),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to
