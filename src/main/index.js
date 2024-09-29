@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 
 import icon from '../../resources/icon.png?asset';
 
-import { handleDroppedFiles } from './util';
+import { handleDroppedFiles, init } from './util';
 
 function createWindow() {
   // Create the browser window.
@@ -22,7 +22,8 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
+    init(mainWindow);
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

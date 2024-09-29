@@ -1,5 +1,12 @@
 import { lstatSync, readdirSync } from 'fs';
+import { homedir } from 'os';
 //import { extname } from 'path';
+
+export function init(browserWindow) {
+  const path = homedir();
+  const state = { path, content: listFilesInDirectory(path) };
+  browserWindow.webContents.send('update-files', state);
+}
 
 export const handleDroppedFiles = (browserWindow) => (event, arg) => {
   console.log('Dropped File(s):', arg);
